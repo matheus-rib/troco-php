@@ -35,6 +35,24 @@ class Troco
          * getQtdeNotas(100.00); // Deve retornar algo como ['100' => 1]
          */
 
-        return $notas_qtd;
+        return $this->calcularQuantidadeNotas($reais, $notas_qtd);
+    }
+
+    private function calcularQuantidadeNotas($valorTotal, $notas){
+        // Como não ficou claro no desafio se números como 0.009 deveriam ser arredondados ou truncados
+        // O código a seguir é para truncar o número
+        $valorTotal = floor($valorTotal * 100) / 100;
+
+        // O código abaixo é para garantir que o array esteja ordenado com a maior nota na primeira posição
+        ksort($notas, SORT_NUMERIC);
+        $notas = array_reverse($notas, true);
+
+        foreach($notas as $valorNota => $quantidadeNota){
+            while($valorTotal >= $valorNota){
+                $notas[$valorNota]++;
+                $valorTotal = round($valorTotal - $valorNota, 2);
+            }
+        }
+        return $notas;
     }
 }
